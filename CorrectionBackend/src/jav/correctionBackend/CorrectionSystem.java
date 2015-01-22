@@ -149,6 +149,15 @@ public class CorrectionSystem {
                         return name.endsWith(".html");
                     }
                 };
+            } else if (t.equals(FileType.ALTO)) {
+                parser = new ALTOParser(this.document);
+                fil = new FilenameFilter() {
+
+                    @Override
+                    public boolean accept(File d, String name) {
+                        return name.endsWith(".xml");
+                    }
+                };
             } else {
                 // TODO throw error
             }

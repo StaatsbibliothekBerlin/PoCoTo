@@ -18,3 +18,7 @@ private.xml
 # Others #
 log.txt
 .svn/
+/OCRFehler/nbproject/private/
+/Filter/nbproject/private/
+/OptionManagement/nbproject/private/
+/CorrectionBackend/nbproject/private/

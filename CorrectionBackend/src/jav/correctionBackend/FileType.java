@@ -32,7 +32,8 @@ package jav.correctionBackend;
  * @author thorsten (thorsten.vobl@googlemail.com)
  */
 public enum FileType {
-    ABBYY_XML_DIR("ABBYY XML"), HOCR("HOCR");
+	// knulo 2015-01-21: added ALTO
+    ABBYY_XML_DIR("ABBYY XML"), HOCR("HOCR"), ALTO("ALTO");	
     private final String display;
     
     private FileType(String s) {
