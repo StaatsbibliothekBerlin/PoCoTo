@@ -51,6 +51,8 @@ public class ALTOParser extends DefaultHandler implements Parser {
     private int right_ = 0;
     private int right_temp = 0;
     private int left_temp = 0;
+	private int width_ = 0;
+	private int height_ = 0;
     private String temp_ = "";
     private String lastchar_;
     private String thischar_;
@@ -131,22 +133,38 @@ public class ALTOParser extends DefaultHandler implements Parser {
 
     @Override
     public void startElement(String uri, String nname, String qName, Attributes atts) {
-        if (qName.equals("document")) {
-        } else if (qName.equals("page")) {
-        } else if (qName.equals("block")) {
-        } else if (qName.equals("region")) {
-        } else if (qName.equals("rect")) {
-        } else if (qName.equals("text")) {
-        } else if (qName.equals("par")) {
-        } else if (qName.equals("line")) {
-            top_ = Integer.parseInt(atts.getValue("t"));
+        if (qName.equals("Page")) {
+        } else if (qName.equals("TextBlock") || 
+					qName.equals("TextLine") ||
+					qName.equals("String") ||
+					qName.equals("SP")) {
+            top_ = Integer.parseInt(atts.getValue("VPOS"));
             if( top_ == -1) {
                 top_ = 1;
             }
-            bottom_ = Integer.parseInt(atts.getValue("b"));
+			if (!qName.equals("SP"))
+				height_ = Integer.parseInt(atts.getValue("HEIGHT"));
+			else
+				height_ = 1;
+			bottom_ = top_ + height_;
             if( bottom_ == -1) {
                 bottom_ = 1;
             }
+            left_ = Integer.parseInt(atts.getValue("HPOS"));
+            if( top_ == -1) {
+                top_ = 1;
+            }
+            width_ = Integer.parseInt(atts.getValue("WIDTH"));
+			right_ = left_ + width_;
+            if( bottom_ == -1) {
+                bottom_ = 1;
+            }
+			if (qName.equals("SP")) {
+				this.temp_ = " ";
+			}
+			if (qName.equals("String")) {
+				this.temp_ = atts.getValue("CONTENT");
+			}
         } else if (qName.equals("variantText")) {
             inVariant_ = true;
         } else if (qName.equals("formatting")) {
@@ -171,15 +189,10 @@ public class ALTOParser extends DefaultHandler implements Parser {
 
     @Override
     public void endElement(String uri, String nname, String qName) {
-        if (qName.equals("document")) {
-        } else if (qName.equals("page")) {
+        if (qName.equals("Page")) {
             orig_id = 1;
             pages++;
-        } else if (qName.equals("block")) {
-        } else if (qName.equals("region")) {
-        } else if (qName.equals("rect")) {
-        } else if (qName.equals("text")) {
-        } else if (qName.equals("par")) {
+        } else if (qName.equals("TextBlock")) {
 
             temptoken_ = new Token("\n");
             temptoken_.setSpecialSeq(SpecialSequenceType.NEWLINE);
@@ -199,7 +212,7 @@ public class ALTOParser extends DefaultHandler implements Parser {
             temp_ = "";
 
             // at end of line, pushback actual token and add newline token
-        } else if (qName.equals("line")) {
+        } else if (qName.equals("TextLine")) {
 
             if (!temp_.equals("")) {
                 temptoken_ = new Token( temp_ );
@@ -261,8 +274,8 @@ public class ALTOParser extends DefaultHandler implements Parser {
         } else if (qName.equals("variantText")) {
             inVariant_ = false;
         } else if (qName.equals("formatting")) {
-        } else if (qName.equals("charParams")) {
-
+        } else if (qName.equals("String")) {
+/*
             if (!inVariant_) {
 
                 // tokenstring empty (happens at begin of document and after closing </line> and </par> tags)
@@ -383,6 +396,7 @@ public class ALTOParser extends DefaultHandler implements Parser {
             }
             // set new right coordinate
             right_ = right_temp;
+			*/
         }
     }
 
